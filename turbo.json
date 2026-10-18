@@ -1,0 +1,32 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "env": ["RUNTIME_TEST_DATABASE_URL"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": [
+        "GROQ_API_KEY",
+        "STORY_MODEL",
+        "VERIFIER_MODEL",
+        "NOTES_MODEL",
+        "LOCAL_DATA_DIR",
+        "DATABASE_URL",
+        "APP_ORIGIN",
+        "MAX_DAILY_STORIES",
+        "MAX_DAILY_STORIES_PER_USER",
+        "MAX_DAILY_REGISTRATIONS"
+      ]
+    }
+  }
+}

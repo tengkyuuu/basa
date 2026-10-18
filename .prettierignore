@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+.turbo
+coverage
+pnpm-lock.yaml
+design
+docs/PLAN.md
+next-env.d.ts
+reference-code
+.impeccable
+.local-data
+**/.local-data
+test-results
+tmp

@@ -1,0 +1,15 @@
+.env
+.env.*
+**/.env
+**/.env.*
+.local-data
+**/.local-data
+tmp
+.impeccable
+test-results
+playwright-report
+.evaluation-data
+.evaluation-reports
+.claude
+reference-code
+design

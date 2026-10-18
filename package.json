@@ -1,0 +1,37 @@
+{
+  "name": "basabridge",
+  "private": true,
+  "version": "0.0.0",
+  "description": "BasaBridge: an AI reading teacher that listens to students read aloud and checks what they understood.",
+  "packageManager": "pnpm@12.3.4",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "turbo run dev --filter=@basabridge/web",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint .",
+    "test": "turbo run test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "node scripts/prepare.mjs",
+    "test:e2e": "playwright test",
+    "evaluate:content": "tsx scripts/evaluate-content.mts",
+    "evaluate:live": "tsx scripts/evaluate-content.mts --live",
+    "evaluate:speech": "tsx scripts/evaluate-speech.mts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "turbo": "^2.11.8",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.5",
+    "zod": "^4.6.7"
+  }
+}

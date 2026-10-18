@@ -1,0 +1,16 @@
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+.git
+**/.env
+**/.env.*
+**/.local-data
+**/*.sqlite*
+**/*.log
+tmp
+.impeccable
+test-results
+playwright-report
+reference-code
+design

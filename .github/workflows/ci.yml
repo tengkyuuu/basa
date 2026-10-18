@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'codex/**']
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Migrate a throwaway database
+        run: pnpm --filter @basabridge/db db:migrate
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm evaluate:content
+      - run: pnpm test
+        env:
+          RUNTIME_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      - run: pnpm build
+      - run: node scripts/prepare-standalone.mjs
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e

@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: basabridge
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && corepack prepare pnpm@12.3.4 --activate && pnpm install --frozen-lockfile && pnpm build && node scripts/prepare-standalone.mjs
+    startCommand: node apps/web/.next/standalone/apps/web/server.js
+    healthCheckPath: /api/health
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: NODE_ENV
+        value: production
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: DATABASE_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: REVIEW_ADMIN_TOKEN
+        sync: false
+      - key: STORY_MODEL
+        value: openai/gpt-oss-120b
+      - key: VERIFIER_MODEL
+        value: openai/gpt-oss-20b
+      - key: NOTES_MODEL
+        value: openai/gpt-oss-20b
+      - key: MAX_DAILY_STORIES
+        value: '60'
+      - key: MAX_DAILY_STORIES_PER_USER
+        value: '10'

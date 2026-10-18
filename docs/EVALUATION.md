@@ -1,0 +1,11 @@
+# Evaluate content and recognition
+
+Run `pnpm evaluate:content` for an offline structural report of all 15 placement passages and 33 lesson versions. Reports are written to ignored `.evaluation-reports/`. Checks cover contracts and quoted evidence. A structural pass is not a human suitability review.
+
+Run `pnpm evaluate:live` explicitly to make one bounded generation at the default starting level, with the configured independent verifier and its bounded internal retries. It uses the private local Groq key or server environment. The report records fixed result codes, content fingerprints and duration, never generated text, usernames or keys. This smoke evaluation does not measure distractor quality, ambiguity, calibration or bilingual explanation quality. Review those with a qualified human and build a versioned adjudicated baseline before making accuracy claims.
+
+`pnpm evaluate:speech -- <private-input.json>` accepts a consent-attested transcript comparison dataset. See the schema in `scripts/evaluate-speech.mts` before preparing it. Keep it in ignored `.evaluation-data/` outside ordinary learner retention. Use opaque sample keys, human transcripts and recognized transcripts, plus age, accent, device and noise group labels. Do not include names or raw audio. Reports calculate word error rate and suppress small groups with fewer than five samples. Do not interpret a small or unrepresentative dataset as a fairness result. No real evaluation dataset is supplied.
+
+Recognition flags preserve the original analysis and record a correction audit. The interface shows a possible matching-word range, explicitly unverified. Self-reported flags never increase the score or promote a learner. Verified adjudication and recalculation rules need a reviewed human-grounded procedure before implementation.
+
+Middle and advanced lessons now use distinct contexts and word practice. Four contexts recur across different skill lessons within each band. Every material remains draft until reviewed. Learn practice changes no level. Initial transfer and delayed checks require ordinary fresh-story evidence under code-owned rules. Delayed checks are scheduled after 1, 3 and 7 days and remain distinct from practice completion.

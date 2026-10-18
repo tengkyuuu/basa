@@ -1,0 +1,17 @@
+# Code owners.
+# Rhett: platform and accounts   James: speech and reading analysis
+# Jhade: AI teacher and engine   Sean: product experience
+
+/.github/              @wayne2604
+/packages/db/          @wayne2604
+/packages/speech/      @tengkyuuu
+/packages/levels/      @Jhadeeee
+/packages/mastery/     @Jhadeeee
+/packages/learn/       @Jhadeeee
+/packages/story-ai/    @Jhadeeee
+/packages/teacher-ai/  @Jhadeeee
+/packages/ui/          @mykd13
+/apps/web/             @mykd13
+
+# Shared contracts need review from the owners on both sides of any change.
+/packages/contracts/   @wayne2604 @tengkyuuu @Jhadeeee @mykd13
