@@ -32,11 +32,12 @@ test('microphone capture starts, stops and reports a provider failure without bl
     await route.fulfill({ response, json: { ...data, aiConfigured: true } });
   });
   await page.goto('/#reading');
+  await page.locator('.reading-voice > summary').click();
   await page.getByRole('checkbox', { name: /I agree to send/ }).check();
   await page.getByRole('button', { name: 'Allow read-aloud', exact: true }).click();
   await page.getByRole('button', { name: 'Start recording', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Stop and check my reading' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Put away story and answer' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Continue to questions' })).toBeDisabled();
   await expect(page.getByText(/Recording: [1-9]/)).toBeVisible();
   await page.screenshot({
     path: `.impeccable/review/${info.project.name}-recording.png`,
@@ -47,7 +48,7 @@ test('microphone capture starts, stops and reports a provider failure without bl
     page.getByRole('alert').filter({ hasText: 'Read-aloud is unavailable' }),
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Start recording' })).toBeEnabled();
-  await page.getByRole('button', { name: 'Put away story and answer' }).click();
+  await page.getByRole('button', { name: 'Continue to questions' }).click();
   await expect(
     page.getByRole('heading', { name: 'Where did the child put the bowl?' }),
   ).toBeVisible();

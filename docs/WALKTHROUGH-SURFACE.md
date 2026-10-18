@@ -16,4 +16,6 @@ FIRST VIEWPORT: A compact brand header and navigation above a centered working a
 
 FORM: Existing canvas flow, implemented as responsive application screens. The brief pins the structure and visual system; no concept seed or new visual world is needed.
 
+Reading refinement: show Read, Answer and Results as a real task sequence. Put the next action directly after the passage, before optional read-aloud controls. Remove the global Hackathon preview banner. Keep contextual uncertainty wording with results. Dropdown fields and supported native picker menus inherit teal actions, green-white surfaces, visible focus and the existing rounded scale. Preserve native keyboard interaction and platform fallback.
+
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

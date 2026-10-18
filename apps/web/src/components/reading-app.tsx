@@ -308,7 +308,9 @@ export function ReadingApp() {
               <a
                 href={`#${item}`}
                 key={item}
-                aria-current={view === item ? 'page' : undefined}
+                aria-current={
+                  view === item || (item === 'home' && view === 'reading') ? 'page' : undefined
+                }
                 onClick={() => go(item)}
               >
                 {t(item)}
@@ -339,7 +341,6 @@ export function ReadingApp() {
           </div>
         )}
       </header>
-      <div className="walkthrough-banner">{t('local_notice')}</div>
       <main id="content" className={snapshot?.account ? 'main' : 'main welcome-layout'}>
         {(error || notice || busy === 'start') && (
           <div className="messages">
@@ -628,6 +629,24 @@ export function ReadingApp() {
               </>
             ) : (
               <>
+                <ol className="reading-steps" aria-label={t('reading_steps')}>
+                  {(['step_read', 'step_answer', 'step_results'] as const).map((step, index) => {
+                    const current =
+                      session.phase === 'reading' ? 0 : session.phase === 'done' ? 2 : 1;
+                    return (
+                      <li
+                        key={step}
+                        aria-current={index === current ? 'step' : undefined}
+                        className={index < current ? 'complete' : undefined}
+                      >
+                        <span className="step-number" aria-hidden="true">
+                          {index < current ? <Icon name="check" size={16} /> : index + 1}
+                        </span>
+                        {t(step)}
+                      </li>
+                    );
+                  })}
+                </ol>
                 {!(session.source === 'placement' && learner.learning?.placement.result) && (
                   <div className="reading-meta">
                     <span className="tag">{t('level', { level: session.level })}</span>
@@ -708,27 +727,11 @@ export function ReadingApp() {
                         </button>
                       </div>
                     )}
-                    <SpeechReader
-                      session={session}
-                      under13={
-                        snapshot.account.ageBand === 'under13' &&
-                        !learner.learning?.guardian.approved
-                      }
-                      consent={learner.microphoneConsent}
-                      configured={snapshot.aiConfigured}
-                      t={t}
-                      onConsent={(value) => act({ action: 'microphone_consent', consent: value })}
-                      onSnapshot={accept}
-                      onBusy={setRecordingBusy}
-                      onMisheard={(index, marked) =>
-                        act({ action: 'misheard', id: session.id, index, marked })
-                      }
-                      onWordListen={(wordIndex) =>
-                        act({ action: 'support', id: session.id, support: 'word_tap', wordIndex })
-                      }
-                    />
                     <div className="reading-bottom">
-                      <p className="muted">{t('silent_note')}</p>
+                      <div>
+                        <strong>{t('ready_questions')}</strong>
+                        <p className="muted">{t('questions_hint')}</p>
+                      </div>
                       <button
                         className="primary"
                         disabled={!!busy || recordingBusy || session.voice.pending}
@@ -738,6 +741,38 @@ export function ReadingApp() {
                         <Icon name="arrow" />
                       </button>
                     </div>
+                    <details
+                      className="reading-voice"
+                      open={learner.microphoneConsent || session.voice.used > 0 || undefined}
+                    >
+                      <summary
+                        onClick={(event) => {
+                          if (recordingBusy) event.preventDefault();
+                        }}
+                      >
+                        {t('read_aloud_optional')}
+                        <span>{t('read_aloud_hint')}</span>
+                      </summary>
+                      <SpeechReader
+                        session={session}
+                        under13={
+                          snapshot.account.ageBand === 'under13' &&
+                          !learner.learning?.guardian.approved
+                        }
+                        consent={learner.microphoneConsent}
+                        configured={snapshot.aiConfigured}
+                        t={t}
+                        onConsent={(value) => act({ action: 'microphone_consent', consent: value })}
+                        onSnapshot={accept}
+                        onBusy={setRecordingBusy}
+                        onMisheard={(index, marked) =>
+                          act({ action: 'misheard', id: session.id, index, marked })
+                        }
+                        onWordListen={(wordIndex) =>
+                          act({ action: 'support', id: session.id, support: 'word_tap', wordIndex })
+                        }
+                      />
+                    </details>
                   </>
                 )}
                 {session.phase === 'answering' && session.question && (

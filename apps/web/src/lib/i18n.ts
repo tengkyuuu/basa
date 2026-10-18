@@ -182,10 +182,6 @@ export const catalog = {
   age: entry('Age group', 'Pangkat ng edad'),
   under13: entry('Under 13', 'Wala pang 13'),
   age13: entry('13 or older', '13 o mas matanda'),
-  local_notice: entry(
-    'Hackathon preview. Reading and speech results are estimates, not a diagnosis.',
-    'Hackathon preview. Pagtataya ang resulta ng pagbasa at boses, hindi pagsusuring medikal.',
-  ),
   ready: entry(
     'Ready for your next story?',
     'Handa ka na ba sa susunod na kuwento?',
@@ -244,7 +240,21 @@ export const catalog = {
   ),
   authored: entry('Included walkthrough story', 'Kasamang kuwento para sa pagsubok'),
   generated: entry('AI story, checked before reading', 'Kuwentong AI, sinuri bago basahin'),
-  answer_questions: entry('Put away story and answer', 'Itago ang kuwento at sumagot'),
+  answer_questions: entry('Continue to questions', 'Magpatuloy sa mga tanong'),
+  reading_steps: entry('Reading session steps', 'Mga hakbang sa pagbasa'),
+  step_read: entry('Read', 'Bumasa'),
+  step_answer: entry('Answer', 'Sumagot'),
+  step_results: entry('Results', 'Resulta'),
+  ready_questions: entry('Finished reading?', 'Tapos nang bumasa?'),
+  questions_hint: entry(
+    'The story will be hidden while you answer.',
+    'Itatago ang kuwento habang sumasagot ka.',
+  ),
+  read_aloud_optional: entry('Read aloud (optional)', 'Magbasa nang malakas (opsyonal)'),
+  read_aloud_hint: entry(
+    'Use your microphone to check your reading.',
+    'Gamitin ang mikropono para suriin ang pagbasa mo.',
+  ),
   question_count: entry('Question {current} of {total}', 'Tanong {current} sa {total}'),
   story_hidden: entry(
     'The story is put away. Think about what you read.',

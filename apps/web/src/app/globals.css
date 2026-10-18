@@ -146,13 +146,6 @@ nav a:hover:not([aria-current]),
   background: var(--accent-soft);
   color: var(--accent);
 }
-.walkthrough-banner {
-  text-align: center;
-  padding: 8px 20px;
-  background: var(--mark-soft);
-  color: var(--ink);
-  font-size: 14px;
-}
 .main {
   width: min(1120px, 100%);
   padding: 54px 40px 72px;
@@ -254,6 +247,77 @@ select {
   border-radius: 8px;
   min-height: 48px;
   padding: 10px 12px;
+}
+select {
+  appearance: none;
+  padding-inline: 14px 44px;
+  background-color: var(--accent-soft);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230c6b63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  border-color: var(--accent);
+  cursor: pointer;
+  max-width: 100%;
+}
+select:hover:not(:disabled) {
+  border-color: var(--accent);
+  background-color: var(--surface);
+}
+select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+select option {
+  color: var(--ink);
+  background: var(--surface);
+}
+@supports (appearance: base-select) {
+  select,
+  select::picker(select) {
+    appearance: base-select;
+  }
+  select {
+    background-image: none;
+    padding-inline: 14px;
+    gap: 20px;
+  }
+  select::picker-icon {
+    color: var(--accent);
+  }
+  select:open::picker-icon {
+    rotate: 180deg;
+  }
+  select::picker(select) {
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 6px;
+    margin-block: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  select option {
+    padding: 12px 14px;
+    border-radius: 8px;
+    gap: 14px;
+    cursor: pointer;
+  }
+  select option:hover,
+  select option:focus-visible,
+  select option:checked {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  select option:checked {
+    font-weight: 700;
+  }
+  select option::checkmark {
+    color: var(--accent);
+    margin-inline-start: auto;
+    order: 1;
+  }
 }
 .primary,
 .secondary,
@@ -463,6 +527,47 @@ select {
   max-width: 760px;
   margin: 0 auto;
 }
+.main:has(.reading-workspace) {
+  padding-top: 32px;
+}
+.reading-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 0;
+  margin: 0 0 28px;
+  list-style: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.reading-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.reading-steps li[aria-current],
+.reading-steps li.complete {
+  color: var(--accent);
+}
+.reading-steps li[aria-current] {
+  border-bottom-color: var(--accent);
+}
+.step-number {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+}
+.reading-steps li[aria-current] .step-number {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
 .reading-meta {
   display: flex;
   gap: 16px;
@@ -470,7 +575,7 @@ select {
   flex-wrap: wrap;
   font-size: 14px;
   color: var(--muted);
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 .tag {
   border-radius: 20px;
@@ -509,9 +614,49 @@ select {
 }
 .reading-bottom {
   margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 .reading-bottom p {
   font-size: 16px;
+  margin: 4px 0 0;
+}
+.reading-voice {
+  margin-top: 28px;
+  padding-block: 20px;
+  border-block: 1px solid var(--line);
+}
+.reading-voice > summary {
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+.reading-voice > summary span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 400;
+}
+.reading-voice .speech-panel {
+  margin: 0;
+  padding-bottom: 0;
+  border: 0;
+}
+.reading-voice .speech-panel > h2 {
+  display: none;
+}
+@media (max-width: 600px) {
+  .reading-steps {
+    gap: 10px;
+    font-size: 14px;
+  }
+  .reading-steps li {
+    gap: 6px;
+  }
 }
 .question-progress {
   color: var(--accent);

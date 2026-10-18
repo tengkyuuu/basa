@@ -212,7 +212,7 @@ The light palette pairs muted green backgrounds with dark ink and a strong teal 
 
 ### Feedback
 
-- **Soft amber:** the current reading-ruler line, informational banner and answer feedback requiring attention.
+- **Soft amber:** the current reading-ruler line and answer feedback requiring attention.
 - **Green and soft green:** success messages and correct-answer feedback.
 - **Red and soft red:** errors and destructive actions.
 
@@ -236,7 +236,7 @@ Short practice passages and review passage previews use the practice role. Word-
 
 ## Layout
 
-The application is a vertical shell with a compact header, centered main area and footer. The main area's width is capped at 1120px with padding of 54px 40px 72px. Paragraphs remain narrower than their container. Reading uses a centered maximum width of 760px; supporting narrow pages use 730px and focused panels 700px.
+The application is a vertical shell with a compact header, centered main area and footer. The main area's width is capped at 1120px with padding of 54px 40px 72px. Reading reduces the main top padding to 32px. Paragraphs remain narrower than their container. Reading uses a centered maximum width of 760px; supporting narrow pages use 730px and focused panels 700px.
 
 Desktop home uses a broad main column and narrower supporting column, with a 64px column gap and 56px row gap. The welcome layout uses two columns with a 72px gap. Forms use a vertical 20px gap; answer choices use a 12px gap. Repeated spacing values in the frontmatter are extracted CSS values, not an existing custom-property spacing API.
 
@@ -262,7 +262,9 @@ Background transitions last 140ms with ease-out. The loading spinner rotates in 
 
 ### Inputs and segmented controls
 
-Fields use a white surface, a stronger border, rounded corners and a visible text label above. Inputs inherit body type and use a teal caret. Segmented controls sit on a page-colored track with 4px padding and gaps; the pressed choice becomes solid teal with accent ink. Language choices instead use a soft teal selected state. Native radio and checkbox controls retain teal accent coloring.
+Text inputs use a white surface, a stronger border, rounded corners and a visible text label above. Inputs inherit body type and use a teal caret. Select controls use soft teal fill, a teal border and a teal arrow. Their hover state returns to white. Where native customizable selects are supported, picker menus use a white surface, a soft border and the reading radius; options use the field radius, with teal text and soft teal fill for hover, focus and selection. Keep the selected checkmark and visible focus. Other browsers retain the native picker with the branded closed control. Preserve native labels, keyboard selection and form behavior.
+
+Segmented controls sit on a page-colored track with 4px padding and gaps; the pressed choice becomes solid teal with accent ink. Language choices instead use a soft teal selected state. Native radio and checkbox controls retain teal accent coloring.
 
 ### Navigation and tags
 
@@ -272,13 +274,15 @@ Navigation wraps across available space. The current page uses a dark-ink pill w
 
 General panels use white, a soft border and the panel radius. Level summaries and result summaries use soft teal. Reading paper uses its own smaller radius, learner-controlled type and spacious padding. With the ruler enabled, each sentence occupies a block and the active line receives a soft amber fill. Keep the story hidden while the learner answers questions.
 
+Reading sessions show the actual Read, Answer and Results sequence above the passage. Use a three-column ordered list, restrained dividers and numbered circles; the current step has solid teal fill and completed steps use a checkmark. The main Continue to questions action follows the passage immediately, with a short explanation that the story will be hidden. The action and explanation stack on narrow screens. There is no global preview banner.
+
 ### Answer choices and feedback
 
 Answer options are large, full-width controls with a visible native input or order marker. A selected choice adds a teal border and soft teal fill. Correct feedback uses soft green, other feedback uses soft amber, and explanatory text accompanies both. Progress uses a thin teal bar over a border-colored track. Results use circles with visible fill and symbols, plus written counts.
 
 ### Speech controls and messages
 
-The read-aloud area is separated with borders and spacing. It reuses existing buttons, checkbox rows, details, error messages and text statuses. Starting, recording and analysis states have explicit labels; recording time appears as a status. Word-level results use a disclosure and textual outcome labels. No separate speech-themed visual system is introduced.
+The optional read-aloud area follows the main questions action in a native disclosure, separated with borders and spacing. It opens automatically when microphone consent or an attempt already exists. Prevent closing it during recording or analysis. It reuses existing buttons, checkbox rows, details, error messages and text statuses. Starting, recording and analysis states have explicit labels; recording time appears as a status. Word-level results use a disclosure and textual outcome labels. No separate speech-themed visual system is introduced.
 
 Optional browser read-aloud uses an underlined text action that switches to a stop action while speaking. A small status line appears underneath when a matching voice is unavailable or speech fails. The wrapper wraps with an 8px gap; the status occupies a full line. The source component is `SpeakButton` in `spoken-text.tsx`.
 

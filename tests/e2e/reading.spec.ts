@@ -10,6 +10,7 @@ test('account, reading, hidden questions, saved progress, settings and deletion'
   page.on('pageerror', (e) => errors.push(e.message));
   await mkdir('.impeccable/review', { recursive: true });
   await page.goto('/');
+  await expect(page.getByText(/Hackathon preview/)).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Sign in', exact: true })).toBeVisible();
   await page.screenshot({
     path: `.impeccable/review/${info.project.name}-signin.png`,
@@ -32,11 +33,18 @@ test('account, reading, hidden questions, saved progress, settings and deletion'
   );
   await page.getByRole('button', { name: 'Read an included story' }).click();
   await expect(page.getByRole('heading', { name: 'A place in the shade' })).toBeVisible();
+  await expect(page.locator('.reading-steps [aria-current="step"]')).toContainText('Read');
+  const nextAction = page.getByRole('button', { name: 'Continue to questions', exact: true });
+  expect(await nextAction.evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(
+    await page.locator('.reading-voice').evaluate((el) => el.getBoundingClientRect().top),
+  );
+  await expect(page.locator('.reading-voice')).not.toHaveAttribute('open');
   await page.screenshot({
     path: `.impeccable/review/${info.project.name}-reading.png`,
     fullPage: true,
   });
-  await page.getByRole('button', { name: 'Put away story and answer' }).click();
+  await page.getByRole('button', { name: 'Continue to questions' }).click();
+  await expect(page.locator('.reading-steps [aria-current="step"]')).toContainText('Answer');
   await expect(page.locator('article')).toHaveCount(0);
   const snapshot = await (await page.request.get('/api/app')).json();
   expect(snapshot.learner.session.text).toBeNull();
@@ -95,7 +103,7 @@ test('account, reading, hidden questions, saved progress, settings and deletion'
   await page.goto('/#home');
   await page.getByRole('button', { name: 'Magbasa ng kasamang kuwento' }).click();
   await expect(page.locator('h1')).toHaveAttribute('lang', 'en');
-  await page.getByRole('button', { name: 'Itago ang kuwento at sumagot' }).click();
+  await page.getByRole('button', { name: 'Magpatuloy sa mga tanong' }).click();
   await expect(page.locator('h1')).toHaveAttribute('lang', 'en');
   await expect(page.locator('legend')).toHaveAttribute('lang', 'en');
   await page.getByRole('navigation').getByRole('link', { name: 'Aking account' }).click();

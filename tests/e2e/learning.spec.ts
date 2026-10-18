@@ -129,7 +129,7 @@ test('starting check resumes without answer leaks and saves a provisional starti
         await page.reload();
         await expect(page.getByRole('heading', { name: session.title, exact: true })).toBeVisible();
       }
-      await page.getByRole('button', { name: 'Put away story and answer' }).click();
+      await page.getByRole('button', { name: 'Continue to questions' }).click();
       for (let index = 0; index < content.story.questions.length; index++) {
         const question = content.story.questions[index]!;
         await expect(
@@ -377,7 +377,7 @@ test('question read-aloud waits for server accommodation recording and survives 
     await action(page.request, { action: 'start', source: 'walkthrough' });
     await page.goto('/');
     await page.getByRole('button', { name: 'Continue my story' }).click();
-    await page.getByRole('button', { name: 'Put away story and answer' }).click();
+    await page.getByRole('button', { name: 'Continue to questions' }).click();
     await page.getByRole('button', { name: 'Listen', exact: true }).click();
     await expect(page.locator('html')).toHaveAttribute(
       'data-spoken',
