@@ -3,6 +3,17 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "passThroughEnv": [
+        "GROQ_API_KEY",
+        "REVIEW_ADMIN_TOKEN",
+        "STORY_MODEL",
+        "VERIFIER_MODEL",
+        "NOTES_MODEL",
+        "SPEECH_MODEL",
+        "TRUST_PROXY",
+        "APP_ORIGIN",
+        "DATABASE_URL"
+      ],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "typecheck": {
