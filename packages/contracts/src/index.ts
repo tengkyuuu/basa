@@ -199,6 +199,32 @@ export const WordResult = z.object({
 });
 export type WordResult = z.infer<typeof WordResult>;
 
+/** Acoustic estimates, separate from transcript alignment and comprehension evidence. */
+export const PronunciationReport = z.object({
+  provider: z.literal('azure'),
+  locale: z.literal('en-US'),
+  accuracy: z.number().min(0).max(100).nullable(),
+  fluency: z.number().min(0).max(100),
+  completeness: z.number().min(0).max(100),
+  words: z
+    .array(
+      z.object({
+        alignmentIndex: z.number().int().nonnegative(),
+        accuracy: z.number().min(0).max(100),
+        phonemes: z
+          .array(
+            z.object({
+              phoneme: z.string().min(1).max(30),
+              accuracy: z.number().min(0).max(100),
+            }),
+          )
+          .max(100),
+      }),
+    )
+    .max(1000),
+});
+export type PronunciationReport = z.infer<typeof PronunciationReport>;
+
 export const TryAnalysis = z.object({
   completed: z.boolean(),
   /** Index of the last expected word reached. */
@@ -208,6 +234,7 @@ export const TryAnalysis = z.object({
   seconds: z.number().nonnegative(),
   wordsPerMinute: z.number().nonnegative(),
   words: z.array(WordResult),
+  pronunciation: PronunciationReport.optional(),
 });
 export type TryAnalysis = z.infer<typeof TryAnalysis>;
 

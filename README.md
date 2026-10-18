@@ -23,6 +23,8 @@ pnpm dev          # http://localhost:3000
 
 For Groq stories, copy `example.env` to `apps/web/.env.local` and set `GROQ_API_KEY`. The default generator is `openai/gpt-oss-120b`; a separate `openai/gpt-oss-20b` verifies content and answers. Without a key, the explicitly labelled included walkthrough stories are available.
 
+For acoustic word and phoneme feedback, see [Azure Speech setup](docs/AZURE-SPEECH.md). Azure is optional and remains inactive until its key, region and `SPEECH_PROVIDER=azure` are configured. Switching audio providers requires new learner consent and renewed guardian verification for children under 13. Groq continues to generate stories and teacher notes.
+
 See [the deployment guide](docs/DEPLOYMENT.md) for the selected Vercel and Neon configuration, [the reviewer guide](docs/REVIEWER-GUIDE.md) for individual staff access and content/guardian approvals, and [the walkthrough guide](docs/LOCAL-WALKTHROUGH.md) for local setup. Local development uses SQLite by default. Public hosting requires Postgres. [Operations](docs/OPERATIONS.md), [evaluation](docs/EVALUATION.md) and the [judging walkthrough](docs/JUDGING.md) cover the release handoff.
 
 ## Commands

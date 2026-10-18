@@ -286,6 +286,16 @@ The optional read-aloud area follows the main questions action in a native discl
 
 Optional browser read-aloud uses an underlined text action that switches to a stop action while speaking. A small status line appears underneath when a matching voice is unavailable or speech fails. The wrapper wraps with an 8px gap; the status occupies a full line. The source component is `SpeakButton` in `spoken-text.tsx`.
 
+### Pronunciation feedback
+
+Optional acoustic feedback extends the speech results with a labeled section, a wrapping definition list and flat divided word rows. Summary labels describe word sounds, reading flow and story words matched, with scores out of 100 or explicit unassessed wording. These are application summaries of acoustic evidence. Keep their accent and recording-quality caveat beside them and separate from comprehension and level decisions.
+
+Suggested practice rows show the expected English word, its score, textual uncertainty or misheard status, and low-scoring IPA sounds when available. Scores use tabular numerals; word headings and summary items wrap without fixed heights. An existing disclosure reveals all assessed words. Reuse current typography, borders, spacing and text actions without introducing new tokens or a separate visual identity.
+
+Guidance follows the report's context: active reading can lead to another story attempt and then questions, word practice can lead to another word recording, saved results point to Learn, and parent reports direct the learner to Learn in their own account. Empty suggestions also use context-specific wording. Render a Listen action only when its authorized callback is supplied; saved and parent reports do not imply local playback. Misheard controls appear only with their callback, remain unverified flags and never raise acoustic scores. All labels and guidance use the English and Filipino catalog with simple and standard variants.
+
+Provider-specific learner consent and guardian review reuse the existing checkbox rows, forms and status messages. Changing from Groq to Azure requires fresh consent and, for an under-13 learner, a new verified guardian approval. Privacy links and staff review wording identify the relevant provider. This pattern documents the interface; provider configuration and live evaluation remain separate gates.
+
 ### Lessons and review materials
 
 Lesson lists and review material lists reuse secondary action buttons and flat bottom borders. Worked examples use soft teal and the reading radius; practice passages use a white surface, a 1px border and the same radius. Practice questions reuse the existing large answer choices and textual feedback.

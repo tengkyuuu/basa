@@ -231,6 +231,42 @@ describe('reviewed learning workflows', () => {
     await expect(app.speechGate(child, session.id)).rejects.toThrow('guardian_required');
     expect((await app.snapshot(parent)).children![0]!.progress).toBeNull();
   });
+  it('requires a new guardian review when switching from Groq to Azure', async () => {
+    const child = await register('switch_child', 'student', 'under13');
+    const parent = await register('switch_parent', 'parent');
+    const learnerId = (await app.snapshot(child)).account!.id;
+    await app.redeem(parent, await app.newLinkCode(child));
+    await app.learning.requestGuardian(parent, learnerId, password);
+    const old = (await app.learning.reviews(admin)).guardians[0]!;
+    await app.learning.reviewGuardian(admin, {
+      learnerId,
+      requestId: old.id,
+      reviewer: 'test',
+      status: 'approved',
+      method: 'video_call',
+      verified: true,
+    });
+    await app.microphoneConsent(child, true);
+    vi.stubEnv('SPEECH_PROVIDER', 'azure');
+    expect((await app.snapshot(child)).learner!.learning!.guardian.approved).toBe(false);
+    expect((await app.snapshot(parent)).children![0]!.guardian!.status).toBe('none');
+    await expect(app.microphoneConsent(child, true)).rejects.toThrow('guardian_required');
+    await app.learning.requestGuardian(parent, learnerId, password);
+    const fresh = (await app.learning.reviews(admin)).guardians.find(
+      (g) => g.version === 'azure-guardian-v1',
+    )!;
+    expect(fresh.id).not.toBe(old.id);
+    await app.learning.reviewGuardian(admin, {
+      learnerId,
+      requestId: fresh.id,
+      reviewer: 'test',
+      status: 'approved',
+      method: 'video_call',
+      verified: true,
+    });
+    await app.microphoneConsent(child, true);
+    expect((await app.snapshot(child)).learner!.microphoneConsent).toBe(true);
+  });
   it('immediately removes guardian access when a parent link is revoked', async () => {
     const child = await register('revoke_child', 'student', 'under13'),
       parent = await register('revoke_parent', 'parent');

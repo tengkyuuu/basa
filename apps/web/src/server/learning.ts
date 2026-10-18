@@ -1,3 +1,4 @@
+import { guardianConsentVersion } from '@basabridge/speech';
 /** Learning and review operations. Learner access is supplied only by ReadingService. */
 import { createHash, randomUUID } from 'node:crypto';
 import {
@@ -196,7 +197,7 @@ export class LearningWorkflows {
   async guardianApproved(account: Account, state: LearnerState): Promise<boolean> {
     if (account.age_band !== 'under13') return true;
     for (const grant of state.guardian ?? []) {
-      if (grant.status !== 'approved' || grant.version !== 'groq-guardian-v1') continue;
+      if (grant.status !== 'approved' || grant.version !== guardianConsentVersion()) continue;
       const link = await this.access.db
         .prepare(
           "SELECT p.parent_id FROM local_parent_links p JOIN local_users u ON u.id = p.parent_id WHERE p.parent_id = ? AND p.learner_id = ? AND u.role = 'parent' AND u.age_band = 'adult'",
@@ -221,7 +222,10 @@ export class LearningWorkflows {
     state.guardian ??= [];
     if (
       state.guardian.some(
-        (g) => g.parentId === parent.id && (g.status === 'pending' || g.status === 'approved'),
+        (g) =>
+          g.parentId === parent.id &&
+          g.version === guardianConsentVersion() &&
+          (g.status === 'pending' || g.status === 'approved'),
       )
     )
       return;
@@ -234,7 +238,7 @@ export class LearningWorkflows {
       reviewedAt: null,
       reviewer: null,
       method: null,
-      version: 'groq-guardian-v1',
+      version: guardianConsentVersion(),
     });
     decision(state, 'consent', 'guardian_pending');
     await this.access.save(account, state);
@@ -678,12 +682,14 @@ export class LearningWorkflows {
       },
       guardian: {
         approved: await this.guardianApproved(account, state),
-        requests: (state.guardian ?? []).map(({ id, status, requestedAt, reviewedAt }) => ({
-          id,
-          status,
-          requestedAt,
-          reviewedAt,
-        })),
+        requests: (state.guardian ?? [])
+          .filter((g) => g.version === guardianConsentVersion())
+          .map(({ id, status, requestedAt, reviewedAt }) => ({
+            id,
+            status,
+            requestedAt,
+            reviewedAt,
+          })),
       },
       decisions: state.decisions ?? [],
       wordPractice: {
@@ -711,19 +717,24 @@ export class LearningWorkflows {
         state.sessions
           .filter((s) => s.phase === 'done' && s.source !== 'placement')
           .slice(-8)
-          .flatMap(
-            (s) =>
-              s.voice?.attempts
-                .at(-1)
-                ?.analysis.words.filter(
-                  (w) =>
-                    w.expected &&
-                    w.confidence >= 0.5 &&
-                    w.outcome !== 'correct' &&
-                    !w.markedMisheard,
-                )
-                .map((w) => w.expected!) ?? [],
-          ),
+          .flatMap((s) => {
+            const analysis = s.voice?.attempts.at(-1)?.analysis;
+            if (!analysis) return [];
+            const acoustic = new Set(
+              analysis.pronunciation?.words
+                .filter((w) => w.accuracy < 60 || w.phonemes.some((p) => p.accuracy < 60))
+                .map((w) => w.alignmentIndex),
+            );
+            return analysis.words
+              .filter(
+                (w, index) =>
+                  w.expected &&
+                  w.confidence >= 0.5 &&
+                  (w.outcome !== 'correct' || acoustic.has(index)) &&
+                  !w.markedMisheard,
+              )
+              .map((w) => w.expected!);
+          }),
       ),
     ].slice(0, 20);
   }

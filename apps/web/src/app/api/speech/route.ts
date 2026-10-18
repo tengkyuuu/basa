@@ -6,7 +6,7 @@ import { service, ServiceError } from '@/server/service';
 import { requestAllowed } from '@/server/deployment';
 
 export const runtime = 'nodejs';
-export const maxDuration = 90;
+export const maxDuration = 240;
 export const dynamic = 'force-dynamic';
 const reply = (body: unknown, status = 200) =>
   Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });

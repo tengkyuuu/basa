@@ -91,12 +91,16 @@ export const learningCatalog = {
     'Itinatago ng app ang mga sagot, oras, pagtataya sa pagbasa, setting at gawain sa aralin. Code ang nagkukuwenta ng marka at antas. Tumatanggap ang Groq ng pangangailangan sa kuwento at bilang sa pagbasa, nang walang pagkakakilanlan ng account.',
   ),
   privacy_audio: e(
-    'A microphone recording starts only when you press Start recording. With consent, BasaBridge forwards it to Groq for transcription, then discards the audio. It keeps word-level results. Do not say names or personal details. Discard stops recording without uploading.',
-    'Nagsisimula lang ang recording kapag pinindot ang Simulan ang recording. Kapag may pahintulot, ipinapadala ito sa Groq para maisulat ang binasa, saka binubura ang audio. Itinatago ang resulta sa mga salita. Huwag bumigkas ng pangalan o personal na detalye. Ihihinto ng Burahin ang recording ang pagrekord nang walang pagpapadala.',
+    'Recording starts only when you press Start recording. The consent screen names the selected provider: Groq for transcription or Microsoft Azure Speech for transcription and pronunciation assessment. Audio goes only to that provider, then Basa discards it and keeps word-level results. Do not say names or personal details. Discard stops recording without uploading. A provider change requires new consent and renewed guardian verification for children under 13.',
+    'Nagsisimula lang ang recording kapag pinindot ang Simulan ang recording. Nasa pahintulot ang napiling serbisyo: Groq para maisulat ang binasa o Microsoft Azure Speech para suriin din ang pagbigkas. Doon lang ipinapadala ang audio. Binubura ito ng Basa at itinatago ang resulta sa mga salita. Huwag bumigkas ng pangalan o personal na detalye. Walang ipinapadala kapag pinili ang Burahin ang recording. Kailangan ng bagong pahintulot at beripikasyon ng tagapag-alaga ng wala pang 13 kapag nagbago ang serbisyo.',
+  ),
+  privacy_azure: e(
+    'Read Microsoft Azure Speech’s data handling information',
+    'Basahin ang impormasyon sa paghawak ng datos ng Microsoft Azure Speech',
   ),
   privacy_guardian: e(
-    'Accounts under 13 need a linked guardian’s verified approval before microphone consent can be enabled. Verification is reviewed by an authorized person outside the app. No identity documents are uploaded to BasaBridge. Either guardian withdrawal or unlinking stops microphone access.',
-    'Kailangan ng wala pang 13 ng beripikadong pahintulot ng nakakabit na tagapag-alaga bago payagan ang mikropono. Sinusuri ng awtorisadong tao ang beripikasyon sa labas ng app. Walang ina-upload na dokumento ng pagkakakilanlan sa BasaBridge. Hihinto ang akses kapag binawi ang pahintulot o inalis ang pagkakakabit.',
+    'Accounts under 13 need a linked guardian’s verified approval before microphone consent can be enabled. Verification is reviewed by an authorized person outside the app. No identity documents are uploaded to Basa. Either guardian withdrawal or unlinking stops microphone access.',
+    'Kailangan ng wala pang 13 ng beripikadong pahintulot ng nakakabit na tagapag-alaga bago payagan ang mikropono. Sinusuri ng awtorisadong tao ang beripikasyon sa labas ng app. Walang ina-upload na dokumento ng pagkakakilanlan sa Basa. Hihinto ang akses kapag binawi ang pahintulot o inalis ang pagkakakabit.',
   ),
   privacy_sharing: e(
     'Parent sharing starts off. The learner controls progress and answer-analysis sharing separately. Parents never receive audio. Guardian microphone permission does not enable progress sharing.',
@@ -304,8 +308,8 @@ export const learningCatalog = {
     'Pahintulot ng tagapag-alaga sa pagbasa nang malakas',
   ),
   guardian_notice: e(
-    'Read-aloud sends a recording of the English passage to Groq for transcription. BasaBridge discards the audio and keeps word-level results. Parents never receive audio. This permission does not turn on progress sharing. You may withdraw it at any time.',
-    'Ipinapadala ng pagbasa nang malakas sa Groq ang recording ng tekstong Ingles para maisulat ang binasa. Binubura ng BasaBridge ang audio at itinatago ang resulta sa mga salita. Hindi tumatanggap ng audio ang magulang. Hindi nito binubuksan ang pagbabahagi ng progreso. Maaaring bawiin ang pahintulot anumang oras.',
+    'Read-aloud sends a recording of the English passage to Groq for transcription. Basa discards the audio and keeps word-level results. Parents never receive audio. This permission does not turn on progress sharing. You may withdraw it at any time.',
+    'Ipinapadala ng pagbasa nang malakas sa Groq ang recording ng tekstong Ingles para maisulat ang binasa. Binubura ng Basa ang audio at itinatago ang resulta sa mga salita. Hindi tumatanggap ng audio ang magulang. Hindi nito binubuksan ang pagbabahagi ng progreso. Maaaring bawiin ang pahintulot anumang oras.',
   ),
   guardian_manual: e(
     'The team must verify the guardian relationship outside this app, using a video call or a signed consent form. Do not upload identity documents here. Permission stays pending until the review is recorded.',
@@ -360,8 +364,8 @@ export const learningCatalog = {
     'Walang naghihintay na kahilingan ng tagapag-alaga.',
   ),
   review_guardian_confirm: e(
-    'I verified this guardian’s identity, relationship to this learner, and informed consent outside the app. I did not store identity documents in BasaBridge.',
-    'Naberipika ko ang pagkakakilanlan, ugnayan sa mag-aaral at may-kaalamang pahintulot sa labas ng app. Hindi ako nag-imbak ng pagkakakilanlan sa BasaBridge.',
+    'I verified this guardian’s identity, relationship to this learner, and informed consent outside the app. I did not store identity documents in Basa.',
+    'Naberipika ko ang pagkakakilanlan, ugnayan sa mag-aaral at may-kaalamang pahintulot sa labas ng app. Hindi ako nag-imbak ng pagkakakilanlan sa Basa.',
   ),
   review_method: e('Verification method', 'Paraan ng beripikasyon'),
   video_call: e('Video call', 'Video call'),

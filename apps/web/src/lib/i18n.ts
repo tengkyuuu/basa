@@ -12,15 +12,81 @@ const entry = (en: string, fil: string, enSimple = en, filSimple = fil): Entry =
 });
 export const catalog = {
   ...learningCatalog,
+  azure_consent: entry(
+    'I agree to send this story recording to Microsoft Azure Speech for transcription and pronunciation assessment. Basa will not store the audio. I will read only the story, without my name or personal details.',
+    'Pumapayag akong ipadala sa Microsoft Azure Speech ang recording ng kuwento para masuri ang pagbasa at pagbigkas. Hindi itatago ng Basa ang audio. Kuwento lang ang babasahin ko, walang pangalan o personal na detalye.',
+    'I agree to send my story recording to Microsoft Azure Speech to check my reading and sounds. Basa will not save it. I will read only the story.',
+    'Pumapayag akong ipadala ang recording sa Microsoft Azure Speech para suriin ang pagbasa at mga tunog. Hindi ito itatago ng Basa. Kuwento lang ang babasahin ko.',
+  ),
+  azure_privacy: entry(
+    'The microphone runs only while recording. Audio goes to Microsoft Azure Speech for pronunciation assessment and is not saved by Basa.',
+    'Gumagana lang ang mikropono habang nagre-record. Ipinapadala ang audio sa Microsoft Azure Speech para sa pagbigkas at hindi itinatago ng Basa.',
+  ),
+  azure_guardian_notice: entry(
+    'This permission covers sending your child’s story recordings to Microsoft Azure Speech for transcription and pronunciation assessment. Basa does not retain audio. Our team must verify your guardian request before microphone access opens.',
+    'Sakop ng pahintulot ang pagpapadala ng recording ng bata sa Microsoft Azure Speech para suriin ang pagbasa at pagbigkas. Hindi iniimbak ng Basa ang audio. Kailangan munang beripikahin ng aming pangkat ang kahilingan bago magamit ang mikropono.',
+  ),
+  azure_guardian_agree: entry(
+    'I am this child’s guardian and consent to Microsoft Azure Speech processing these story recordings.',
+    'Ako ang tagapag-alaga ng batang ito at pumapayag akong iproseso ng Microsoft Azure Speech ang mga recording ng kuwento.',
+  ),
+  pronunciation_title: entry('Your pronunciation', 'Ang iyong pagbigkas'),
+  pronunciation_not_assessed: entry('Not assessed', 'Hindi nasuri'),
+  pronunciation_estimate: entry(
+    'Azure estimates these scores against US English. Accent and recording quality can affect them. They do not measure understanding or change your level.',
+    'Tinatantiya ng Azure ang mga marka batay sa US English. Maaaring makaapekto ang punto at kalidad ng recording. Hindi nito sinusukat ang pag-unawa o binabago ang antas.',
+  ),
+  pronunciation_accuracy: entry('Word sounds', 'Tunog ng mga salita'),
+  pronunciation_fluency: entry('Reading flow', 'Daloy ng pagbasa'),
+  pronunciation_completeness: entry('Story words matched', 'Mga salitang nagtugma'),
+  pronunciation_score: entry('{score} / 100', '{score} / 100'),
+  pronunciation_practice: entry('Words to practise', 'Mga salitang sanayin'),
+  pronunciation_saved_next: entry(
+    'You have finished the questions. Open Learn to listen and practise the suggested words.',
+    'Natapos mo na ang mga tanong. Buksan ang Matuto para pakinggan at sanayin ang mga iminumungkahing salita.',
+  ),
+  pronunciation_parent_next: entry(
+    'The learner can open Learn in their account to listen and practise these words.',
+    'Maaaring buksan ng mag-aaral ang Matuto sa sariling account para pakinggan at sanayin ang mga salitang ito.',
+  ),
+  pronunciation_practice_next: entry(
+    'Listen to the word in the practice list, then record it again when you are ready.',
+    'Pakinggan ang salita sa listahan ng pagsasanay, at i-record muli kapag handa ka na.',
+  ),
+  pronunciation_practice_no_flags: entry(
+    'No sounds were flagged in this attempt. You can try the word again or choose another.',
+    'Walang natukoy na tunog na kailangang sanayin sa pagsubok na ito. Maaari mong ulitin ang salita o pumili ng iba.',
+  ),
+  pronunciation_saved_no_flags: entry(
+    'No extra sound practice was suggested for this recording. Your comprehension result is shown separately.',
+    'Walang dagdag na pagsasanay sa tunog na iminungkahi para sa recording na ito. Hiwalay na ipinapakita ang resulta sa pag-unawa.',
+  ),
+  pronunciation_next: entry(
+    'Listen to each word, say it slowly, then try the story again. After the questions, you can practise these words in Learn.',
+    'Pakinggan ang bawat salita, bigkasin nang dahan-dahan, at subukang basahin muli ang kuwento. Pagkatapos ng mga tanong, maaari itong sanayin sa Matuto.',
+  ),
+  pronunciation_no_flags: entry(
+    'No sounds were flagged for practice in this recording. You can continue to the questions.',
+    'Walang natukoy na tunog na kailangang sanayin sa recording na ito. Maaari nang sagutin ang mga tanong.',
+  ),
+  pronunciation_check: entry(
+    'Azure suggests checking this word’s sounds.',
+    'Iminumungkahi ng Azure na suriin ang mga tunog ng salitang ito.',
+  ),
+  pronunciation_sounds: entry(
+    'Sounds to check (IPA, score out of 100):',
+    'Mga tunog na susuriin (IPA, marka mula sa 100):',
+  ),
+  pronunciation_all: entry('See all assessed words', 'Tingnan ang lahat ng nasuring salita'),
   retry: entry('Try again', 'Subukan muli'),
   read_aloud: entry('Read aloud', 'Magbasa nang malakas'),
   speech_consent: entry(
-    'I agree to send this reading recording to Groq for transcription. BasaBridge will not store the audio. I will read only the story, without saying my name or personal details.',
-    'Pumapayag akong ipadala sa Groq ang recording na ito para maisulat ang binasa. Hindi itatago ng BasaBridge ang audio. Kuwento lang ang babasahin ko, walang pangalan o personal na detalye.',
+    'I agree to send this reading recording to Groq for transcription. Basa will not store the audio. I will read only the story, without saying my name or personal details.',
+    'Pumapayag akong ipadala sa Groq ang recording na ito para maisulat ang binasa. Hindi itatago ng Basa ang audio. Kuwento lang ang babasahin ko, walang pangalan o personal na detalye.',
   ),
   speech_privacy: entry(
-    'Your microphone runs only while recording. Audio goes to Groq for transcription and is not saved by BasaBridge.',
-    'Gumagana lang ang mikropono habang nagre-record. Ipinapadala ang audio sa Groq at hindi iniimbak ng BasaBridge.',
+    'Your microphone runs only while recording. Audio goes to Groq for transcription and is not saved by Basa.',
+    'Gumagana lang ang mikropono habang nagre-record. Ipinapadala ang audio sa Groq at hindi iniimbak ng Basa.',
   ),
   enable_mic: entry('Allow read-aloud', 'Payagan ang pagbasa nang malakas'),
   disable_mic: entry('Withdraw microphone consent', 'Bawiin ang pahintulot sa mikropono'),
@@ -58,8 +124,8 @@ export const catalog = {
     'Hindi bumukas ang mikropono. Suriin ang pahintulot sa browser o magbasa nang tahimik.',
   ),
   speech_invalid: entry(
-    'That recording could not be read. Keep it under three minutes and try again.',
-    'Hindi mabasa ang recording. Gawing mas maikli sa tatlong minuto at subukan muli.',
+    'That recording could not be read. Try a shorter recording within the on-screen time limit.',
+    'Hindi mabasa ang recording. Subukan ang mas maikling recording ayon sa takdang oras sa screen.',
   ),
   speech_unavailable: entry(
     'Read-aloud is unavailable right now. Try again later or continue silently.',
@@ -143,7 +209,7 @@ export const catalog = {
   ),
   normal_evidence: entry('Counted with standard weight.', 'Karaniwang bigat sa pagtataya.'),
   no_support: entry('No reading supports used.', 'Walang ginamit na tulong sa pagbasa.'),
-  brand: entry('BasaBridge', 'BasaBridge'),
+  brand: entry('Basa', 'Basa'),
   tagline: entry('Read a little. Understand more.', 'Magbasa nang kaunti. Umunawa nang higit.'),
   home: entry('Home', 'Simula'),
   learn: entry('Learn', 'Matuto'),

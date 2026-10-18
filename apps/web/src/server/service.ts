@@ -1,3 +1,4 @@
+import { SPEECH_LIMITS } from '@basabridge/speech/limits';
 /** Authorization boundary (BB-10). Routes never read learner storage directly.
  * SQLite is an explicit local walkthrough adapter, not the production database.
  */
@@ -14,7 +15,15 @@ import {
   triesFor,
   isPass,
 } from '@basabridge/levels';
-import { transcribeReading, recognitionReview } from '@basabridge/speech';
+import {
+  assessPronunciation,
+  speechProvider,
+  speechConfigured,
+  speechConsentVersion,
+  guardianConsentVersion,
+  transcribeReading,
+  recognitionReview,
+} from '@basabridge/speech';
 import {
   COMPREHENSION_SKILLS,
   evidenceWeight,
@@ -132,7 +141,8 @@ export function publicSession(session: ReadingSession): PublicSession {
         session.source !== 'placement' && (session.phase === 'reading' || session.phase === 'done')
           ? (session.voice?.attempts.at(-1)?.analysis ?? null)
           : null,
-      pending: !!session.voice?.pending && Date.now() - session.voice.pending.at < 90_000,
+      pending:
+        !!session.voice?.pending && Date.now() - session.voice.pending.at < SPEECH_LIMITS.pendingMs,
     },
     id: session.id,
     level: session.level,
@@ -334,7 +344,12 @@ export class ReadingService {
       account = await this.actor(token);
     } catch (error) {
       if (!(error instanceof ServiceError && error.code === 'signed_out')) throw error;
-      return { account: null, aiConfigured: !!process.env.GROQ_API_KEY };
+      return {
+        account: null,
+        aiConfigured: !!process.env.GROQ_API_KEY,
+        speechProvider: speechProvider(),
+        speechConfigured: speechConfigured(),
+      };
     }
     const base: Snapshot = {
       account: {
@@ -344,6 +359,8 @@ export class ReadingService {
         ageBand: account.age_band,
       },
       aiConfigured: !!process.env.GROQ_API_KEY,
+      speechProvider: speechProvider(),
+      speechConfigured: speechConfigured(),
     };
     if (account.role === 'student') {
       const state = JSON.parse(account.state) as LearnerState;
@@ -354,7 +371,7 @@ export class ReadingService {
         level: state.level,
         placement: state.placement,
         settings: state.settings,
-        microphoneConsent: !!state.microphoneConsent,
+        microphoneConsent: state.microphoneConsent?.version === speechConsentVersion(),
         progress: progressFor(state),
         session: latest ? publicSession(latest) : null,
         learning: await this.learning.snapshot(account, state),
@@ -381,7 +398,7 @@ export class ReadingService {
           const state =
             link.progress || link.analysis ? (JSON.parse(learner.state) as LearnerState) : null;
           const ownGuardian = ((JSON.parse(learner.state) as LearnerState).guardian ?? [])
-            .filter((g) => g.parentId === account.id)
+            .filter((g) => g.parentId === account.id && g.version === guardianConsentVersion())
             .at(-1);
           return {
             id: learner.id,
@@ -647,7 +664,7 @@ export class ReadingService {
     const { account, state } = await this.student(token);
     const session = this.current(state, id);
     if (session.phase !== 'reading') return;
-    if (session.voice?.pending && Date.now() - session.voice.pending.at < 90_000)
+    if (session.voice?.pending && Date.now() - session.voice.pending.at < SPEECH_LIMITS.pendingMs)
       throw new ServiceError('speech_busy', 409);
     session.phase = 'answering';
     session.issuedAt = Date.now();
@@ -781,6 +798,7 @@ export class ReadingService {
         correct: session.answers.filter((a) => a.correct).length,
         total: session.answers.length,
         focus: progressFor(state).focus,
+        reading: session.voice?.attempts.at(-1)?.analysis,
       });
       if (note) {
         const fresh = await this.student(token);
@@ -804,7 +822,7 @@ export class ReadingService {
     if (consent && !(await this.learning.guardianApproved(account, state)))
       throw new ServiceError('guardian_required', 403);
     state.microphoneConsent = consent
-      ? { version: 'groq-speech-v1', at: new Date().toISOString() }
+      ? { version: speechConsentVersion(), at: new Date().toISOString() }
       : null;
     decision(state, 'consent', consent ? 'microphone_allowed' : 'microphone_withdrawn');
     await this.save(account, state);
@@ -813,17 +831,21 @@ export class ReadingService {
     const { account, state } = await this.student(token);
     if (!(await this.learning.guardianApproved(account, state)))
       throw new ServiceError('guardian_required', 403);
-    if (!state.microphoneConsent) throw new ServiceError('speech_consent_required', 403);
-    if (!process.env.GROQ_API_KEY) throw new ServiceError('speech_unavailable', 503);
+    if (state.microphoneConsent?.version !== speechConsentVersion())
+      throw new ServiceError('speech_consent_required', 403);
+    if (!speechConfigured()) throw new ServiceError('speech_unavailable', 503);
     const session = this.current(state, id);
     if (session.phase !== 'reading') throw new ServiceError('changed', 409);
     return { account, state, session };
   }
   async analyseSpeech(token: string | undefined, id: string, requestId: string, audio: Blob) {
     const { account, state, session } = await this.speechGate(token, id);
+    const consentVersion = state.microphoneConsent!.version;
+    const consentAt = state.microphoneConsent!.at;
+    const provider = speechProvider();
     session.voice ??= { attempts: [] };
     if (session.voice.attempts.some((a) => a.id === requestId)) return;
-    if (session.voice.pending && Date.now() - session.voice.pending.at < 90_000)
+    if (session.voice.pending && Date.now() - session.voice.pending.at < SPEECH_LIMITS.pendingMs)
       throw new ServiceError('speech_busy', 409);
     if (
       session.source === 'placement'
@@ -841,10 +863,17 @@ export class ReadingService {
     await this.save(account, state);
     try {
       const analysis = await this.measure('speech', () =>
-        transcribeReading(audio, session.story.text),
+        provider === 'azure'
+          ? assessPronunciation(audio, session.story.text)
+          : transcribeReading(audio, session.story.text),
       );
       // Consent or account access can be revoked while transcription is in flight.
       const fresh = await this.speechGate(token, id);
+      if (
+        fresh.state.microphoneConsent?.version !== consentVersion ||
+        fresh.state.microphoneConsent?.at !== consentAt
+      )
+        throw new ServiceError('speech_consent_required', 403);
       if (fresh.session.voice?.pending?.id !== requestId) throw new ServiceError('changed', 409);
       fresh.session.voice.attempts.push({
         id: requestId,
@@ -893,8 +922,9 @@ export class ReadingService {
     const { account, state } = await this.student(token);
     if (!(await this.learning.guardianApproved(account, state)))
       throw new ServiceError('guardian_required', 403);
-    if (!state.microphoneConsent) throw new ServiceError('speech_consent_required', 403);
-    if (!process.env.GROQ_API_KEY) throw new ServiceError('speech_unavailable', 503);
+    if (state.microphoneConsent?.version !== speechConsentVersion())
+      throw new ServiceError('speech_consent_required', 403);
+    if (!speechConfigured()) throw new ServiceError('speech_unavailable', 503);
     const session = this.current(state, id);
     if (
       session.phase !== 'done' ||
@@ -913,6 +943,9 @@ export class ReadingService {
     audio: Blob,
   ) {
     const { account, state } = await this.wordGate(token, id, word);
+    const consentVersion = state.microphoneConsent!.version;
+    const consentAt = state.microphoneConsent!.at;
+    const provider = speechProvider();
     if (state.wordPractice?.some((a) => a.id === requestId)) return;
     await this.rateLimit(`speech:${account.id}`, 20, 86_400_000);
     await this.rateLimit(
@@ -920,8 +953,15 @@ export class ReadingService {
       positiveLimit('MAX_DAILY_TRANSCRIPTIONS', 100),
       86_400_000,
     );
-    const analysis = await this.measure('word', () => transcribeReading(audio, word));
+    const analysis = await this.measure('word', () =>
+      provider === 'azure' ? assessPronunciation(audio, word) : transcribeReading(audio, word),
+    );
     const fresh = await this.wordGate(token, id, word);
+    if (
+      fresh.state.microphoneConsent?.version !== consentVersion ||
+      fresh.state.microphoneConsent?.at !== consentAt
+    )
+      throw new ServiceError('speech_consent_required', 403);
     if (fresh.state.wordPractice?.some((a) => a.id === requestId)) return;
     fresh.state.wordPractice ??= [];
     fresh.state.wordPractice.push({ id: requestId, word, analysis, at: new Date().toISOString() });

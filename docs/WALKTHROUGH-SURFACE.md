@@ -18,4 +18,8 @@ FORM: Existing canvas flow, implemented as responsive application screens. The b
 
 Reading refinement: show Read, Answer and Results as a real task sequence. Put the next action directly after the passage, before optional read-aloud controls. Remove the global Hackathon preview banner. Keep contextual uncertainty wording with results. Dropdown fields and supported native picker menus inherit teal actions, green-white surfaces, visible focus and the existing rounded scale. Preserve native keyboard interaction and platform fallback.
 
+Pronunciation refinement: optional Azure acoustic feedback extends the existing read-aloud, word-practice, saved-result and explicitly shared parent-analysis surfaces. Use a wrapping summary definition list, flat word rows, expected English words and IPA suggestions. Keep uncertainty visible. Guidance must fit the current task and available actions; Listen appears only with an authorized callback. Misheard flags do not verify a reading or raise scores. Pronunciation never decides comprehension or level movement.
+
+Activation remains explicit: Groq is the default speech provider. Azure needs server configuration, fresh provider-specific learner consent and renewed verified guardian approval for under-13 learners. Missing configuration or a provider failure remains visible without sending audio to another provider. The current review has no Azure key or region and establishes neither live Azure behavior nor accent calibration. See `docs/AZURE-SPEECH.md` and `docs/adr/0010-acoustic-pronunciation-assessment.md` for activation and factual limits.
+
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

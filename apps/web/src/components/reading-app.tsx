@@ -1,4 +1,5 @@
 'use client';
+import { PronunciationFeedback } from './pronunciation-feedback';
 
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
@@ -7,6 +8,7 @@ import type { ReadingHelp as HelpSettings } from '@basabridge/contracts';
 import type { Progress, Snapshot } from '@/lib/domain';
 import { catalog, translate } from '@/lib/i18n';
 import type { Language, MessageKey } from '@/lib/i18n';
+import { BrandLogo } from './brand-logo';
 import { SpeechReader } from './speech-reader';
 import {
   LearningView,
@@ -294,10 +296,7 @@ export function ReadingApp() {
       </a>
       <header className="site-header">
         <a className="brand" href="#home" onClick={() => go('home')}>
-          <span className="brand-mark">
-            <Icon name="bridge" size={28} />
-          </span>
-          {t('brand')}
+          <BrandLogo label={t('brand')} />
         </a>
         {snapshot?.account ? (
           <nav aria-label={t('nav')}>
@@ -760,7 +759,8 @@ export function ReadingApp() {
                           !learner.learning?.guardian.approved
                         }
                         consent={learner.microphoneConsent}
-                        configured={snapshot.aiConfigured}
+                        configured={snapshot.speechConfigured ?? snapshot.aiConfigured}
+                        provider={snapshot.speechProvider}
                         t={t}
                         onConsent={(value) => act({ action: 'microphone_consent', consent: value })}
                         onSnapshot={accept}
@@ -973,6 +973,17 @@ export function ReadingApp() {
                         <p>{t('next_level', { level: session.result.levelAfter })}</p>
                       )}
                     </section>
+                    {session.voice.latest?.pronunciation && (
+                      <PronunciationFeedback
+                        analysis={session.voice.latest}
+                        context="saved"
+                        t={t}
+                        busy={!!busy}
+                        onMisheard={(index, marked) =>
+                          act({ action: 'misheard', id: session.id, index, marked })
+                        }
+                      />
+                    )}
                     <section className="teacher-note">
                       <Icon name="book" />
                       <div>
@@ -991,7 +1002,8 @@ export function ReadingApp() {
                       <button className="secondary" onClick={() => go('progress')}>
                         {t('progress')}
                       </button>
-                      {session.result.correct < session.result.total && (
+                      {(session.result.correct < session.result.total ||
+                        !!learner.learning?.flaggedWords.length) && (
                         <button className="text-button" onClick={() => go('learn')}>
                           {t('learn')}
                         </button>
@@ -1026,7 +1038,8 @@ export function ReadingApp() {
               under13:
                 snapshot.account.ageBand === 'under13' && !learner.learning.guardian.approved,
               consent: learner.microphoneConsent,
-              configured: snapshot.aiConfigured,
+              configured: snapshot.speechConfigured ?? snapshot.aiConfigured,
+              provider: snapshot.speechProvider,
               onConsent: (consent) => act({ action: 'microphone_consent', consent }),
               onSnapshot: accept,
             }}
@@ -1077,7 +1090,13 @@ export function ReadingApp() {
               <section className="shared-learner" key={child.id}>
                 <h2>{child.username}</h2>
                 {child.level !== null && <p>{t('level', { level: child.level })}</p>}
-                <GuardianPanel child={child} t={t} act={act} busy={!!busy} />
+                <GuardianPanel
+                  provider={snapshot.speechProvider}
+                  child={child}
+                  t={t}
+                  act={act}
+                  busy={!!busy}
+                />
                 {child.progress ? (
                   <ProgressView progress={child.progress} t={t} language={language} />
                 ) : (
@@ -1102,6 +1121,23 @@ export function ReadingApp() {
                                 pace: reading.voice.wordsPerMinute,
                               })}
                             </p>
+                            {reading.voice.pronunciation && (
+                              <PronunciationFeedback
+                                analysis={reading.voice}
+                                context="parent"
+                                t={t}
+                                busy={!!busy}
+                                onMisheard={(index, marked) =>
+                                  act({
+                                    action: 'misheard',
+                                    id: reading.id,
+                                    index,
+                                    marked,
+                                    learnerId: child.id,
+                                  })
+                                }
+                              />
+                            )}
                             <ul className="word-results">
                               {reading.voice.words
                                 .map((word, index) => ({ word, index }))

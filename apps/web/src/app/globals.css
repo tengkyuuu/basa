@@ -111,14 +111,10 @@ svg {
   text-decoration: none;
   white-space: nowrap;
 }
-.brand-mark {
-  width: 40px;
-  height: 40px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 52px;
 }
 nav {
   display: flex;
@@ -1103,9 +1099,8 @@ details > p {
   .brand {
     font-size: 19px;
   }
-  .brand-mark {
-    width: 34px;
-    height: 34px;
+  .brand-logo {
+    height: 44px;
   }
   .language-switch button {
     padding: 8px;
@@ -1377,4 +1372,46 @@ details > p {
   .practice-passage {
     padding: 20px;
   }
+}
+
+.pronunciation-feedback {
+  margin-block: 1.5rem;
+}
+.pronunciation-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  padding-block: 1rem;
+  border-block: 1px solid var(--line);
+}
+.pronunciation-scores dt {
+  color: var(--muted);
+}
+.pronunciation-scores dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pronunciation-words {
+  list-style: none;
+  padding: 0;
+}
+.pronunciation-words > li {
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.pronunciation-words p {
+  margin-block: 0.5rem;
+}
+.pronunciation-word-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.phoneme {
+  display: inline-block;
+  margin-inline-end: 0.75rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }

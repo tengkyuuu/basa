@@ -19,7 +19,7 @@ await mkdir(join(root, 'apps/web/.next'), { recursive: true });
 await cp(resolve('apps/web/.next/static'), join(root, 'apps/web/.next/static'), {
   recursive: true,
 });
-// No public assets are currently required; fonts and icons are bundled locally.
+await cp(resolve('apps/web/public'), join(root, 'apps/web/public'), { recursive: true });
 process.stdout.write(
   'Standalone server prepared. No environment files or learner databases included.\n',
 );

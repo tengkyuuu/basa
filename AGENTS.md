@@ -94,7 +94,7 @@ Work is tracked in Linear (team BB, project BasaBridge v1). Branches and commits
 
 Commit messages are Conventional Commits that end with the issue ID, for example `feat(web): sign-in form (BB-12)`. Scopes: `web`, `ui`, `db`, `contracts`, `levels`, `mastery`, `story-ai`, `teacher-ai`, `speech`, `docs`, `ci`, `design`.
 
-Never merge your own pull request, push to `main`, or force push.
+Never force push.
 
 ## Writing rules for issues, PRs and docs
 

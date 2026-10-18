@@ -90,6 +90,13 @@ export function alignWords(expected: string[], heard: HeardWord[]): WordResult[]
 
 export { transcribeReading, SpeechError } from './groq';
 export { recognitionReview } from './corrections';
+export { assessPronunciation } from './azure';
+export {
+  speechProvider,
+  speechConfigured,
+  speechConsentVersion,
+  guardianConsentVersion,
+} from './config';
 
 /** Words right per minute. Zero when there is no elapsed time. */
 export function wordsPerMinute(wordsRight: number, seconds: number): number {

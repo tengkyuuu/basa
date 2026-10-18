@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { translate, type Language } from '@/lib/i18n';
+import { BrandLogo } from './brand-logo';
 export function PrivacyApp() {
   const [language, setLanguage] = useState<Language>('en'),
     [simple, setSimple] = useState(false);
@@ -12,7 +13,7 @@ export function PrivacyApp() {
     <div className="app">
       <header className="site-header">
         <a className="brand" href="/">
-          {t('brand')}
+          <BrandLogo label={t('brand')} />
         </a>
         <label className="field">
           <span>{t('language')}</span>
@@ -43,6 +44,14 @@ export function PrivacyApp() {
         <p>
           <a href="https://console.groq.com/docs/your-data" rel="noreferrer">
             {t('privacy_groq')}
+          </a>
+        </p>
+        <p>
+          <a
+            href="https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/speech-service/speech-to-text/data-privacy-security"
+            rel="noreferrer"
+          >
+            {t('privacy_azure')}
           </a>
         </p>
         <a href="/">{t('back_home')}</a>

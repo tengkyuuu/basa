@@ -29,7 +29,10 @@ test('microphone capture starts, stops and reports a provider failure without bl
   await page.route('**/api/app', async (route) => {
     const response = await route.fetch();
     const data = await response.json();
-    await route.fulfill({ response, json: { ...data, aiConfigured: true } });
+    await route.fulfill({
+      response,
+      json: { ...data, aiConfigured: true, speechConfigured: true, speechProvider: 'groq' },
+    });
   });
   await page.goto('/#reading');
   await page.locator('.reading-voice > summary').click();

@@ -294,7 +294,7 @@ test('guardian requests stay private until verified and withdrawal closes microp
     await capture(page, info.project.name, 'review-guardian-queue');
     await page
       .getByLabel(
-        'I verified this guardian’s identity, relationship to this learner, and informed consent outside the app. I did not store identity documents in BasaBridge.',
+        'I verified this guardian’s identity, relationship to this learner, and informed consent outside the app. I did not store identity documents in Basa.',
       )
       .check();
     await page

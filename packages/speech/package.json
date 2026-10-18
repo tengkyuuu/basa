@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@basabridge/contracts": "workspace:*",
+    "microsoft-cognitiveservices-speech-sdk": "^1.52.0",
     "zod": "^4.6.7"
   },
   "scripts": {

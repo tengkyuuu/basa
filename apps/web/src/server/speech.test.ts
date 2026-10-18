@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { openLocalDatabase } from '@basabridge/db/local';
 import { sqliteRuntime, type RuntimeDatabase } from '@basabridge/db/runtime';
-import { transcribeReading } from '@basabridge/speech';
+import { assessPronunciation, transcribeReading } from '@basabridge/speech';
 import type * as SpeechModule from '@basabridge/speech';
 import { triesFor } from '@basabridge/levels';
 import { ReadingService } from './service';
@@ -10,6 +10,7 @@ import { ReadingService } from './service';
 vi.mock('@basabridge/speech', async (importOriginal) => ({
   ...(await importOriginal<typeof SpeechModule>()),
   transcribeReading: vi.fn(),
+  assessPronunciation: vi.fn(),
 }));
 let database: RuntimeDatabase;
 let service: ReadingService;
@@ -33,6 +34,8 @@ const analysis = {
 };
 beforeEach(() => {
   vi.stubEnv('GROQ_API_KEY', 'test-key');
+  vi.stubEnv('SPEECH_PROVIDER', 'groq');
+  vi.mocked(assessPronunciation).mockReset().mockResolvedValue(analysis);
   database = sqliteRuntime(openLocalDatabase(':memory:'));
   service = new ReadingService(database);
   vi.mocked(transcribeReading).mockReset().mockResolvedValue(analysis);
@@ -148,4 +151,88 @@ describe('server microphone enforcement', () => {
     await expect(pending).rejects.toThrow('speech_consent_required');
     expect((await service.snapshot(token)).learner!.session!.voice.used).toBe(0);
   });
+});
+
+it('requires renewed Azure consent and routes audio exclusively to the selected provider', async () => {
+  const { token, session } = await account('13plus');
+  await service.microphoneConsent(token, true);
+  vi.stubEnv('SPEECH_PROVIDER', 'azure');
+  vi.stubEnv('AZURE_SPEECH_KEY', 'test-azure');
+  vi.stubEnv('AZURE_SPEECH_REGION', 'southeastasia');
+  expect((await service.snapshot(token)).learner!.microphoneConsent).toBe(false);
+  await expect(service.analyseSpeech(token, session.id, randomUUID(), audio)).rejects.toThrow(
+    'speech_consent_required',
+  );
+  expect(assessPronunciation).not.toHaveBeenCalled();
+  await service.microphoneConsent(token, true);
+  await service.analyseSpeech(token, session.id, randomUUID(), audio);
+  expect(assessPronunciation).toHaveBeenCalledTimes(1);
+  expect(transcribeReading).not.toHaveBeenCalled();
+});
+it('does not fall back to Groq when the selected Azure resource is missing', async () => {
+  const { token, session } = await account('13plus');
+  vi.stubEnv('SPEECH_PROVIDER', 'azure');
+  vi.stubEnv('AZURE_SPEECH_KEY', '');
+  await service.microphoneConsent(token, true);
+  await expect(service.analyseSpeech(token, session.id, randomUUID(), audio)).rejects.toThrow(
+    'speech_unavailable',
+  );
+  expect(assessPronunciation).not.toHaveBeenCalled();
+  expect(transcribeReading).not.toHaveBeenCalled();
+});
+it('offers acoustic word practice even when transcription matches, without changing comprehension or tries', async () => {
+  const { token, session } = await account('13plus');
+  vi.stubEnv('SPEECH_PROVIDER', 'azure');
+  vi.stubEnv('AZURE_SPEECH_KEY', 'test');
+  vi.stubEnv('AZURE_SPEECH_REGION', 'southeastasia');
+  await service.microphoneConsent(token, true);
+  vi.mocked(assessPronunciation).mockResolvedValue({
+    ...analysis,
+    pronunciation: {
+      provider: 'azure',
+      locale: 'en-US',
+      accuracy: 80,
+      fluency: 70,
+      completeness: 100,
+      words: [{ alignmentIndex: 0, accuracy: 80, phonemes: [{ phoneme: 's', accuracy: 30 }] }],
+    },
+  });
+  await service.analyseSpeech(token, session.id, randomUUID(), audio);
+  await service.beginQuestions(token, session.id);
+  for (let i = 0; i < session.total; i++) {
+    await service.answer(token, session.id, i, [0]);
+    await service.next(token, session.id, i);
+  }
+  const before = (await service.snapshot(token)).learner!;
+  expect(before.learning!.flaggedWords).toContain('story');
+  expect(before.session!.voice.latest!.pronunciation!.accuracy).toBe(80);
+  await service.analyseWord(token, session.id, randomUUID(), 'story', audio);
+  const after = (await service.snapshot(token)).learner!;
+  expect(after.level).toBe(before.level);
+  expect(after.session!.voice.used).toBe(before.session!.voice.used);
+  expect(after.session!.result).toEqual(before.session!.result);
+  await service.markMisheard(token, session.id, 0, true);
+  expect((await service.snapshot(token)).learner!.learning!.flaggedWords).not.toContain('story');
+});
+it('discards a Groq result when the provider and consent change in flight', async () => {
+  const { token, session } = await account('13plus');
+  await service.microphoneConsent(token, true);
+  let finish!: (value: typeof analysis) => void;
+  const started = new Promise<void>((resolve) =>
+    vi.mocked(transcribeReading).mockImplementation(() => {
+      resolve();
+      return new Promise((r) => {
+        finish = r;
+      });
+    }),
+  );
+  const pending = service.analyseSpeech(token, session.id, randomUUID(), audio);
+  await started;
+  vi.stubEnv('SPEECH_PROVIDER', 'azure');
+  vi.stubEnv('AZURE_SPEECH_KEY', 'test');
+  vi.stubEnv('AZURE_SPEECH_REGION', 'southeastasia');
+  await service.microphoneConsent(token, true);
+  finish(analysis);
+  await expect(pending).rejects.toThrow('speech_consent_required');
+  expect((await service.snapshot(token)).learner!.session!.voice.used).toBe(0);
 });

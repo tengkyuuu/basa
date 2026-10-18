@@ -10,6 +10,7 @@ type Microphone = {
   under13: boolean;
   consent: boolean;
   configured: boolean;
+  provider?: 'groq' | 'azure';
   onSnapshot: (snapshot: Snapshot) => void;
   onConsent: (value: boolean) => Promise<boolean>;
 };
@@ -422,6 +423,7 @@ function WordPractice({
             under13={microphone.under13}
             consent={microphone.consent}
             configured={microphone.configured}
+            provider={microphone.provider}
             t={t}
             onConsent={microphone.onConsent}
             onSnapshot={microphone.onSnapshot}
@@ -434,11 +436,13 @@ function WordPractice({
   );
 }
 export function GuardianPanel({
+  provider = 'groq',
   child,
   t,
   act,
   busy,
 }: {
+  provider?: 'groq' | 'azure';
   child: NonNullable<Snapshot['children']>[number];
   t: Translator;
   act: Action;
@@ -457,7 +461,15 @@ export function GuardianPanel({
       )}
       {status === 'pending' || status === 'approved' ? (
         <>
-          <p>{t(status === 'pending' ? 'guardian_manual' : 'guardian_notice')}</p>
+          <p>
+            {t(
+              status === 'pending'
+                ? 'guardian_manual'
+                : provider === 'azure'
+                  ? 'azure_guardian_notice'
+                  : 'guardian_notice',
+            )}
+          </p>
           <button
             className="text-button danger-text"
             disabled={busy}
@@ -484,11 +496,11 @@ export function GuardianPanel({
               form.reset();
           }}
         >
-          <p>{t('guardian_notice')}</p>
+          <p>{t(provider === 'azure' ? 'azure_guardian_notice' : 'guardian_notice')}</p>
           <p>{t('guardian_manual')}</p>
           <label className="check-row">
             <input type="checkbox" name="consent" required disabled={busy} />
-            <span>{t('guardian_agree')}</span>
+            <span>{t(provider === 'azure' ? 'azure_guardian_agree' : 'guardian_agree')}</span>
           </label>
           <label className="field">
             <span>{t('password')}</span>

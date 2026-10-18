@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { catalog, translate, lessonText, type Language, type MessageKey } from '@/lib/i18n';
+import { BrandLogo } from './brand-logo';
 import { StaffGate } from './staff-gate';
 import type { LearningWorkflows } from '@/server/learning';
 type ReviewData = Awaited<ReturnType<LearningWorkflows['reviews']>>;
@@ -68,7 +69,7 @@ export function ReviewApp() {
     <div className="app">
       <header className="site-header">
         <a className="brand" href="/">
-          {t('brand')}
+          <BrandLogo label={t('brand')} />
         </a>
         <label className="field">
           <span>{t('language')}</span>
@@ -136,7 +137,13 @@ export function ReviewApp() {
                   }}
                 >
                   <p className="reference-code">{t('guardian_reference', { id: g.id })}</p>
-                  <p>{t('guardian_notice')}</p>
+                  <p>
+                    {t(
+                      g.version === 'azure-guardian-v1'
+                        ? 'azure_guardian_notice'
+                        : 'guardian_notice',
+                    )}
+                  </p>
                   <p>{t('guardian_manual')}</p>
                   <label className="field">
                     <span>{t('review_method')}</span>

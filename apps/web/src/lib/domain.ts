@@ -48,7 +48,7 @@ export interface ReadingSession {
   levelAfter: number | null;
 }
 export interface LearnerState {
-  microphoneConsent?: { version: 'groq-speech-v1'; at: string } | null;
+  microphoneConsent?: { version: 'groq-speech-v1' | 'azure-speech-v1'; at: string } | null;
   level: number;
   placement: 'pending' | 'skipped' | 'complete';
   placementRun?: PlacementState & {
@@ -91,7 +91,7 @@ export interface GuardianRequest {
   reviewedAt: string | null;
   reviewer: string | null;
   method: 'video_call' | 'signed_form' | null;
-  version: 'groq-guardian-v1';
+  version: 'groq-guardian-v1' | 'azure-guardian-v1';
 }
 export interface DecisionRecord {
   id: string;
@@ -188,6 +188,8 @@ export interface Progress {
 export interface Snapshot {
   account: { id: string; username: string; role: 'student' | 'parent'; ageBand: string } | null;
   aiConfigured: boolean;
+  speechProvider?: 'groq' | 'azure';
+  speechConfigured?: boolean;
   learner?: {
     generation?: { status: string; retryAt: number; error: string | null } | null;
     level: number;
