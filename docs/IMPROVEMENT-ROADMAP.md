@@ -6,7 +6,7 @@ Proposed on 2026-10-18. Implementation status is recorded below. Vercel in the u
 
 Implemented: individual staff accounts, scoped reviewer roles, revocation and attributable reviews; versioned runtime migrations and normalized activity; persisted generation reservations and resumable ready results; approved authored reading alternatives; private aggregate service counters; distinct lesson bands; 15 placement candidates; delayed fresh-story retention checks; conservative recognition uncertainty and correction audit; repeatable structural, bounded live-provider and consented speech-evaluation tools. See [operations](OPERATIONS.md), [evaluation](EVALUATION.md) and the [judging script](JUDGING.md).
 
-Request-driven generation does not provide a background worker or guarantee exactly-once provider charges after a process crash. Unverified recognition flags never alter scores. Hosted restoration, actual educator approvals, guardian verification procedures, empirical calibration, representative speech fairness evaluation, observed learner sessions and independent privacy/security review still require real evidence. No synthetic result substitutes for these gates.
+Request-driven generation does not provide a background worker or guarantee exactly-once provider charges after a process crash. Unverified recognition flags never alter scores. Public hosting and an isolated snapshot restore are verified in the [release record](HACKATHON-RELEASE.md). Actual educator approvals, guardian verification procedures, empirical calibration, representative speech fairness evaluation, observed learner sessions and independent privacy/security review still require real evidence. No synthetic result substitutes for these gates.
 
 ## Product goal
 

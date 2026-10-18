@@ -34,7 +34,7 @@ The first restore attempt used Neon's default finalization, which moved the sour
 
 Other failures were resolved: marketplace CLI terms acceptance remained stuck, so authenticated Neon tools provisioned and connected the database; a Vercel build environment warning was fixed with explicit Turbo pass-through; local artifact upload exclusions were tightened. A local `npm run build` initially encountered Windows file locking while the packaged rehearsal server was running. After that server stopped, `npm run build` passed with one successful build task. The first local browser run used the earlier 60-second test timeout and had seven timeouts under severe memory pressure. The revised suite passed all 20 cases in GitHub CI. No local browser pass is claimed for that first run.
 
-Two later live generation attempts were rejected with `ai_invalid`; no unchecked story was delivered. An explicit bounded diagnostic then passed generation and all five independent answer checks. Validated generation can fail and consume quota. The app reports this and offers a deliberate retry or an explicitly authored included story. Do not claim perfect provider availability.
+Two later live generation attempts were rejected with `ai_invalid`; no unchecked story was delivered. An explicit bounded diagnostic then passed generation and all five independent answer checks. The subsequent normal hosted retry also passed and completed with a teacher note on the intended production database. Validated generation can fail and consume quota. The app reports this and offers a deliberate retry or an explicitly authored included story. Do not claim perfect provider availability.
 
 ## First staff setup and remaining human work
 
