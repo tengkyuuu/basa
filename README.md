@@ -5,6 +5,7 @@ An AI reading teacher for students. A learner reads a short English story out lo
 - Plan and backlog: [docs/PLAN.md](docs/PLAN.md)
 - Screens: [design/](design/README.md) (exported from the design canvas)
 - Decisions: [docs/adr/](docs/adr)
+- Hackathon app: [BasaBridge](https://basabridge-tau.vercel.app), with [release checks](docs/HACKATHON-RELEASE.md)
 
 ## Requirements
 

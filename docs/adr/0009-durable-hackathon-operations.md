@@ -16,6 +16,6 @@ Aggregate operations by UTC day, operation and fixed outcome without learner ide
 
 The release has migration reopening/checksum tests, normalized save/delete tests, staff scope/revocation tests, concurrent reservation and ready-result recovery tests, PostgreSQL-engine tests and browser workflows. Reports and provider smoke tests are separate from human educational evaluation. See the evaluation and operations guides.
 
-Older builds cannot read activity after normalization. Roll forward or restore a matching backup into a separate database with reconciliation. A real hosted restore rehearsal remains required. Staff multi-factor authentication, representative speech evaluation, calibrated placement and independent privacy review remain outside the established evidence.
+Older builds cannot read activity after normalization. Roll forward or restore a matching backup into a separate database with reconciliation. An isolated hosted snapshot restore rehearsal subsequently passed for a test account; see the release record. Staff multi-factor authentication, representative speech evaluation, calibrated placement and independent privacy review remain outside the established evidence.
 
 Locked-area review assignments: Rhett for schema, authorization and shared shapes; Jhade and James for model/speech boundaries; Rhett and James for consent and guardian handling. The user authorized implementation and consented Groq transcription. No owner approval or educational validation is implied.

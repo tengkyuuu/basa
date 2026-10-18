@@ -1,6 +1,6 @@
 # Publish the hackathon app
 
-Vercel is selected in `jamescalunsag13-9119s-projects`, project `basabridge`. Provision separate free Neon production and preview databases before publishing. Public accounts never use temporary disk. Hosting configuration does not certify the full student-pilot plan.
+Published at [BasaBridge](https://basabridge-tau.vercel.app), in `jamescalunsag13-9119s-projects`, project `basabridge`, with separate Neon production and preview branches. Public accounts never use temporary disk. See the [release record](HACKATHON-RELEASE.md) for verification and the isolated snapshot restore rehearsal. Hosting configuration does not certify the full student-pilot plan.
 
 ## Vercel option
 
@@ -12,7 +12,7 @@ Vercel is selected in `jamescalunsag13-9119s-projects`, project `basabridge`. Pr
 6. Keep Fluid Compute enabled and allow a 300-second function duration for story generation. The app route exports 300 seconds and speech exports 90 seconds. Audio is bounded to 4,000,000 bytes, below Vercel's 4.5 MB request limit. See [function limits](https://vercel.com/docs/functions/limitations) and [duration configuration](https://vercel.com/docs/functions/configuring-functions/duration). Provider and plan limits can change; check the selected settings before judging.
 7. Deploy, open `/api/health` on the canonical address, then run the checks below. Vercel builds normal Next.js output; do not run the standalone preparation script in Vercel. SQLite is prohibited in Vercel runtime. Use `/review` to carry out real reviews before enabling draft learning content or under-13 microphones.
 
-The app uses a small Postgres pool per function instance. Persisted generation reservations prevent concurrent duplicate work for a learner across instances. Provider concurrency limits remain per instance, not a background queue. Keep quotas conservative and monitor usage. Hosted restore rehearsal remains a separate release gate. See [operations](OPERATIONS.md).
+The app uses a small Postgres pool per function instance. Persisted generation reservations prevent concurrent duplicate work for a learner across instances. Provider concurrency limits remain per instance, not a background queue. Keep quotas conservative and monitor usage. An isolated snapshot restore rehearsal passed for a test account; repeat it before schema changes. See [operations](OPERATIONS.md).
 
 ## Render option
 
@@ -74,6 +74,6 @@ Browser tests run the packaged production server, temporary SQLite and no key at
 
 ## Remaining release gates
 
-Placement, Learn and the manual review queues are implemented. Actual educator approval and guardian identity verification remain human actions. Empirical calibration, speech fairness and model-quality evaluation, independent security/privacy review, hosted backup restoration and monitoring remain release gates. The app identifies itself as a hackathon preview, not a validated reading assessment or school rollout.
+Placement, Learn, monitoring and the manual review queues are implemented. An isolated hosted snapshot restore was tested. Actual educator approval and guardian identity verification remain human actions. Empirical calibration, representative speech/model-quality evaluation, backup retention procedures and independent security/privacy review remain release gates. The app identifies itself as a hackathon preview, not a validated reading assessment or school rollout.
 
 Locked-area review: Rhett for persistence, authorization and shared shapes; Jhade and James for providers and speech; Rhett and James for consent and age gating. These are assignments, not claims of approval. No PR was opened or owners contacted.

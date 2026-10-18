@@ -22,7 +22,7 @@ Administrators can open Service health in `/review`. Daily counters report story
 
 Runtime migration 4 adds normalized sessions, answers, lesson work, placement work, staff, jobs and metrics. A checksum ledger rejects edited migrations and databases from a newer runtime. Account mutations move legacy activity into normalized tables atomically under revision control. Tests cover migration reopening, checksum rejection, saved activity and cascading deletion.
 
-Once an account is normalized, a pre-version-4 build cannot read its complete activity. Do not redeploy an older build against the current database. Roll forward with a compatible fix, or restore the matching pre-migration backup into a separate database and explicitly reconcile subsequent activity before directing traffic. Never run a destructive downgrade on live data. A tested hosted backup and restore remains required before real learner use.
+Once an account is normalized, a pre-version-4 build cannot read its complete activity. Do not redeploy an older build against the current database. Roll forward with a compatible fix, or restore the matching pre-migration backup into a separate database and explicitly reconcile subsequent activity before directing traffic. Never run a destructive downgrade on live data. The isolated hosted snapshot rehearsal passed for a test account; see the release record. Use `finalize: false` for a Neon rehearsal and verify the endpoint's branch explicitly. Retention and off-provider backup procedures still need an operator.
 
 ## Owner checks
 
