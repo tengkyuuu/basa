@@ -733,7 +733,13 @@ export function ReadingApp() {
                       </div>
                       <button
                         className="primary"
-                        disabled={!!busy || recordingBusy || session.voice.pending}
+                        disabled={
+                          !!busy ||
+                          recordingBusy ||
+                          session.voice.pending ||
+                          !!session.voice.required
+                        }
+                        title={session.voice.required ? t('voice_required') : undefined}
                         onClick={() => void act({ action: 'begin', id: session.id })}
                       >
                         {t('answer_questions')}
@@ -742,14 +748,19 @@ export function ReadingApp() {
                     </div>
                     <details
                       className="reading-voice"
-                      open={learner.microphoneConsent || session.voice.used > 0 || undefined}
+                      open={
+                        learner.microphoneConsent ||
+                        session.voice.used > 0 ||
+                        !!session.voice.required ||
+                        undefined
+                      }
                     >
                       <summary
                         onClick={(event) => {
                           if (recordingBusy) event.preventDefault();
                         }}
                       >
-                        {t('read_aloud_optional')}
+                        {t(session.voice.required ? 'read_aloud_required' : 'read_aloud_optional')}
                         <span>{t('read_aloud_hint')}</span>
                       </summary>
                       <SpeechReader

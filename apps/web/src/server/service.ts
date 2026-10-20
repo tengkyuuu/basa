@@ -123,11 +123,22 @@ export function progressFor(state: LearnerState): Progress {
       .reverse(),
   };
 }
-export function publicSession(session: ReadingSession): PublicSession {
+// Reading aloud is required once the learner has allowed the microphone and speech is set up.
+// Learners who cannot use the microphone (no consent, no guardian approval) are never blocked.
+function voiceRequired(state: LearnerState, session: ReadingSession) {
+  return (
+    session.source !== 'placement' &&
+    state.microphoneConsent?.version === speechConsentVersion() &&
+    speechConfigured() &&
+    (session.voice?.attempts.length ?? 0) === 0
+  );
+}
+export function publicSession(session: ReadingSession, state: LearnerState): PublicSession {
   const q = session.story.questions[session.questionIndex];
   const answer = session.answers.find((a) => a.questionIndex === session.questionIndex);
   return {
     voice: {
+      required: voiceRequired(state, session),
       review:
         session.source !== 'placement' &&
         ['reading', 'done'].includes(session.phase) &&
@@ -373,7 +384,7 @@ export class ReadingService {
         settings: state.settings,
         microphoneConsent: state.microphoneConsent?.version === speechConsentVersion(),
         progress: progressFor(state),
-        session: latest ? publicSession(latest) : null,
+        session: latest ? publicSession(latest, state) : null,
         learning: await this.learning.snapshot(account, state),
       };
       const links = (await this.db
@@ -666,6 +677,7 @@ export class ReadingService {
     if (session.phase !== 'reading') return;
     if (session.voice?.pending && Date.now() - session.voice.pending.at < SPEECH_LIMITS.pendingMs)
       throw new ServiceError('speech_busy', 409);
+    if (voiceRequired(state, session)) throw new ServiceError('voice_required', 409);
     session.phase = 'answering';
     session.issuedAt = Date.now();
     await this.save(account, state);

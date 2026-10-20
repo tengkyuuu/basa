@@ -150,6 +150,7 @@ export interface PublicSession {
     allowed: number | null;
     latest: TryAnalysis | null;
     pending: boolean;
+    required?: boolean;
     review?: {
       flaggedWords: number;
       originalWordsRight: number;

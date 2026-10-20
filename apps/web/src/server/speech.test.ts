@@ -131,6 +131,15 @@ describe('server microphone enforcement', () => {
     expect((await service.snapshot(token)).learner!.session!.voice.latest).toBeNull();
     expect(JSON.stringify(await service.export(token))).not.toContain('wordsRight');
   });
+  it('requires one read-aloud before the questions once the microphone is allowed', async () => {
+    const { token, session } = await account('13plus');
+    await service.microphoneConsent(token, true);
+    expect((await service.snapshot(token)).learner!.session!.voice.required).toBe(true);
+    await expect(service.beginQuestions(token, session.id)).rejects.toThrow('voice_required');
+    await service.analyseSpeech(token, session.id, randomUUID(), audio);
+    expect((await service.snapshot(token)).learner!.session!.voice.required).toBe(false);
+    await service.beginQuestions(token, session.id);
+  });
   it('drops a pending result if consent is revoked during transcription', async () => {
     const { token, session } = await account('13plus');
     await service.microphoneConsent(token, true);

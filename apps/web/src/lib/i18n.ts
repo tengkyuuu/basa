@@ -317,6 +317,11 @@ export const catalog = {
     'Itatago ang kuwento habang sumasagot ka.',
   ),
   read_aloud_optional: entry('Read aloud (optional)', 'Magbasa nang malakas (opsyonal)'),
+  read_aloud_required: entry('Read aloud (required)', 'Magbasa nang malakas (kailangan)'),
+  voice_required: entry(
+    'Read the story aloud once before the questions.',
+    'Basahin muna nang malakas ang kuwento bago ang mga tanong.',
+  ),
   read_aloud_hint: entry(
     'Use your microphone to check your reading.',
     'Gamitin ang mikropono para suriin ang pagbasa mo.',
